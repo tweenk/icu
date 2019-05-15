@@ -276,6 +276,17 @@ public:
      */
     Locale build(UErrorCode& status);
 
+    /**
+     * Sets the UErrorCode if an error occurred while recording sets.
+     * Preserves older error codes in the outErrorCode.
+     * @param outErrorCode Set to an error code if it does not contain one already
+     *                  and an error occurred while recording sets.
+     *                  Otherwise unchanged.
+     * @return TRUE if U_FAILURE(outErrorCode)
+     * @draft ICU 65
+     */
+    UBool copyErrorTo(UErrorCode &outErrorCode);
+
 private:
     UErrorCode status_;
     char language_[9];

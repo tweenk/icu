@@ -55,8 +55,15 @@ void LocaleBuilderTest::runIndexedTest( int32_t index, UBool exec, const char* &
 
 void LocaleBuilderTest::Verify(LocaleBuilder& bld, const char* expected, const char* msg) {
     UErrorCode status = U_ZERO_ERROR;
+    UErrorCode copyStatus = U_ZERO_ERROR;
+    if (bld.copyErrorTo(copyStatus)) {
+        errln(msg, u_errorName(copyStatus));
+    }
     Locale loc = bld.build(status);
     if (U_FAILURE(status)) {
+        errln(msg, u_errorName(status));
+    }
+    if (status != copyStatus) {
         errln(msg, u_errorName(status));
     }
     std::string tag = loc.toLanguageTag<std::string>(status);
@@ -190,6 +197,9 @@ void LocaleBuilderTest::TestLocaleBuilder() {
         status = U_ZERO_ERROR;
         bld.clear();
         while (true) {
+            status = U_ZERO_ERROR;
+            UErrorCode copyStatus = U_ZERO_ERROR;
+            bld.copyErrorTo(copyStatus);
             method = testCase[i++];
             if (strcmp("L", method) == 0) {
                 bld.setLanguage(testCase[i++]).build(status);
@@ -260,6 +270,9 @@ void LocaleBuilderTest::TestLocaleBuilder() {
             }
             if (strcmp("T", method) == 0) {
                 break;
+            }
+            if (status != copyStatus) {
+                errln("copyErrorTo not matching");
             }
         }  // while(true)
     }  // for TESTCASES

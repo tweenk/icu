@@ -433,4 +433,9 @@ Locale LocaleBuilder::build(UErrorCode& errorCode)
     return product;
 }
 
+UBool LocaleBuilder::copyErrorTo(UErrorCode &outErrorCode) {
+    outErrorCode = status_;
+    return U_FAILURE(outErrorCode) ? TRUE : FALSE;
+}
+
 U_NAMESPACE_END
